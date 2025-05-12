@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, reset, setStep } from './counterSlice';
+import { increment, decrement, reset, setStep, clearHistory } from './counterSlice';
 import ThemeToggle from '../theme/ThemeToggle';
 
 const Counter = () => {
   const count = useSelector((state) => state.counter.value);
   const step = useSelector((state) => state.counter.step);
   const dark = useSelector((state) => state.theme.dark);
+  const history = useSelector((state) => state.counter.history);
   const dispatch = useDispatch();
 
   return (
@@ -58,6 +59,35 @@ const Counter = () => {
         </div>
         <div className="mt-8">
           <ThemeToggle />
+        </div>
+        <div className={`mt-8 w-full text-left ${dark ? 'text-gray-200' : 'text-gray-700'}`}>
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-semibold text-base">History</span>
+            <button
+              onClick={() => dispatch(clearHistory())}
+              className={`text-xs px-3 py-1 rounded transition 
+                ${dark 
+                  ? 'bg-gray-700 hover:bg-gray-600 text-gray-200 border border-gray-600' 
+                  : 'bg-white hover:bg-gray-100 text-gray-700 border border-gray-300'
+                }`}
+            >
+              Clear
+            </button>
+          </div>
+          <ul className="max-h-32 overflow-y-auto text-sm space-y-0.5 border rounded bg-transparent p-2">
+            {history.slice().reverse().map((val, idx) => (
+              <li
+                key={history.length - idx - 1}
+                className={`px-2 py-1 rounded 
+                  ${dark 
+                    ? 'hover:bg-gray-700' 
+                    : 'hover:bg-gray-100'
+                  } transition`}
+              >
+                {val}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
